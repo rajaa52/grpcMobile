@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+option java_package = "ma.projet.grpc.stubs";
+option java_multiple_files = true;
+
+// Énumération pour le type de compte
+enum TypeCompte {
+  COURANT = 0;
+  EPARGNE = 1;
+}
+
+// Message représentant un compte
+message Compte {
+  string id = 1;
+  float solde = 2;
+  string dateCreation = 3;
+  TypeCompte type = 4;
+}
+
+// Message pour la requête de création ou mise à jour d'un compte
+message CompteRequest {
+  float solde = 1;
+  string dateCreation = 2;
+  TypeCompte type = 3;
+}
+
+// Message pour les statistiques de solde
+message SoldeStats {
+  int32 count = 1;  // Nombre total de comptes
+  float sum = 2;    // Somme des soldes
+  float average = 3; // Moyenne des soldes
+}
+
+// Messages pour les requêtes et réponses du service
+
+// Requête pour obtenir tous les comptes
+message GetAllComptesRequest {}
+
+// Réponse contenant la liste des comptes
+message GetAllComptesResponse {
+  repeated Compte comptes = 1;
+}
+
+// Requête pour obtenir un compte par ID
+message GetCompteByIdRequest {
+  string id = 1;
+}
+
+// Réponse contenant le compte demandé
+message GetCompteByIdResponse {
+  Compte compte = 1;
+}
+
+// Requête pour obtenir les statistiques de solde
+message GetTotalSoldeRequest {}
+
+// Réponse contenant les statistiques de solde
+message GetTotalSoldeResponse {
+  SoldeStats stats = 1;
+}
+
+// Requête pour sauvegarder un compte (création ou mise à jour)
+message SaveCompteRequest {
+  CompteRequest compte = 1;
+}
+
+// Réponse contenant le compte sauvegardé
+message SaveCompteResponse {
+  Compte compte = 1;
+}
+
+// Définition du service correspondant aux requêtes et mutations GraphQL
+service CompteService {
+  // Équivalent de la requête allComptes
+  rpc AllComptes(GetAllComptesRequest) returns (GetAllComptesResponse);
+
+  // Équivalent de la requête compteById
+  rpc CompteById(GetCompteByIdRequest) returns (GetCompteByIdResponse);
+
+  // Équivalent de la requête totalSolde
+  rpc TotalSolde(GetTotalSoldeRequest) returns (GetTotalSoldeResponse);
+
+  // Équivalent de la mutation saveCompte
+  rpc SaveCompte(SaveCompteRequest) returns (SaveCompteResponse);
+}
